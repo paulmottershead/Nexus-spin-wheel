@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Nexus People – Spin the Wheel</title>
+<style>
+    body {
+        background: #0A1A2F;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        color: white;
+    }
+
+    #logo {
+        width: 220px;
+        margin-bottom: 25px;
+    }
+
+    #wheel {
+        width: 450px;
+        height: 450px;
+        border-radius: 50%;
+        border: 12px solid #FFFFFF;
+        position: relative;
+        overflow: hidden;
+        transition: transform 4s ease-out;
+        box-shadow: 0 0 25px rgba(0,0,0,0.4);
+    }
+
+    .slice {
+        position: absolute;
+        width: 50%;
+        height: 50%;
+        top: 50%;
+        left: 50%;
+        transform-origin: 0% 0%;
+        border: 1px solid #FFFFFF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #FFFFFF;
+        text-align: center;
+        padding: 10px;
+    }
+
+    #spinButton {
+        margin-top: 35px;
+        padding: 18px 40px;
+        font-size: 22px;
+        background: #00AEEF;
+        color: #0A1A2F;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<img id="logo" src="/attachments/sPv7jaSWqdPwsZY7SbQoH.png" alt="Nexus People Logo">
+
+<div id="wheel"></div>
+
+<button id="spinButton">SPIN</button>
+
+<script>
+    const prizes = [
+        "£10 Voucher",
+        "Extra Break",
+        "Free Lunch",
+        "Nexus Goodie Bag",
+        "Early Finish",
+        "Mystery Prize"
+    ];
+
+    const wheel = document.getElementById("wheel");
+    const sliceAngle = 360 / prizes.length;
+
+    prizes.forEach((prize, i) => {
+        const slice = document.createElement("div");
+        slice.className = "slice";
+        slice.style.transform = `rotate(${i * sliceAngle}deg) skewY(${90 - sliceAngle}deg)`;
+        slice.style.background = i % 2 === 0 ? "#00AEEF" : "#001B3A";
+        slice.innerHTML = prize;
+        wheel.appendChild(slice);
+    });
+
+    document.getElementById("spinButton").addEventListener("click", () => {
+        const randomSpin = 3600 + Math.floor(Math.random() * 360);
+        wheel.style.transform = `rotate(${randomSpin}deg)`;
+    });
+</script>
+
+</body>
+</html>
