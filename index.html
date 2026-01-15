@@ -132,24 +132,35 @@
 
     let currentRotation = 0;
 
-    document.getElementById("spinButton").addEventListener("click", () => {
-        const extra = Math.floor(Math.random() * 360);
-        const spins = 10 * 360;
-        const target = currentRotation + spins + extra;
+ document.getElementById("spinButton").addEventListener("click", () => {
+    const extra = Math.floor(Math.random() * 360);
+    const spins = 10 * 360;
+    const target = spins + extra;
 
-        wheelGroup.style.transition = "transform 4s ease-out";
-        wheelGroup.style.transform = `rotate(${target}deg)`;
+    // Reset wheel instantly (no animation)
+    wheelGroup.style.transition = "none";
+    wheelGroup.style.transform = "rotate(0deg)";
 
-        const final = target % 360;
-        const index = Math.floor(((360 - final + sliceAngle / 2) % 360) / sliceAngle);
-        const winningPrize = prizes[index];
-
-        setTimeout(() => {
-            document.getElementById("result").textContent = `You won: ${winningPrize}`;
-            currentRotation = target % 360;
-        }, 4000);
+    // Force browser to apply the reset before animating
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            // Now animate the spin
+            wheelGroup.style.transition = "transform 4s ease-out";
+            wheelGroup.style.transform = `rotate(${target}deg)`;
+        });
     });
+
+    // Work out the winning slice
+    const final = target % 360;
+    const index = Math.floor(((360 - final + sliceAngle / 2) % 360) / sliceAngle);
+    const winningPrize = prizes[index];
+
+    setTimeout(() => {
+        document.getElementById("result").textContent = `You won: ${winningPrize}`;
+    }, 4000);
+});
 </script>
 
 </body>
 </html>
+
