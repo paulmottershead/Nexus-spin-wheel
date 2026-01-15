@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <title>Nexus People – Spin the Wheel</title>
 <style>
+    #wheelGroup {
+    transform-origin: 250px 250px;
+}
     body {
         background: #0A1A2F;
         display: flex;
@@ -138,7 +141,7 @@
         const targetRotation = currentRotation + spins + extra;
 
         wheelGroup.style.transition = "transform 4s ease-out";
-        wheelGroup.style.transform = `translate(0,0) rotate(${targetRotation}deg)`;
+        wheelGroup.style.transform = `rotate(${targetRotation}deg)`;
 
         const finalRotation = targetRotation % 360;
         const index = Math.floor(((360 - finalRotation + sliceAngle / 2) % 360) / sliceAngle);
@@ -153,3 +156,4 @@
 
 </body>
 </html>
+
