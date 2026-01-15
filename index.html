@@ -12,43 +12,56 @@
         justify-content: center;
         height: 100vh;
         margin: 0;
-        font-family: 'Arial', sans-serif;
-        color: white;
+        font-family: Arial, sans-serif;
+        color: #FFFFFF;
     }
 
     #logo {
         width: 220px;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
     }
 
-    #wheel {
-        width: 450px;
-        height: 450px;
-        border-radius: 50%;
-        border: 12px solid #FFFFFF;
+    #wheelContainer {
         position: relative;
-        overflow: hidden;
-        transition: transform 4s ease-out;
-        box-shadow: 0 0 25px rgba(0,0,0,0.4);
-        mask-image: radial-gradient(circle, white 99%, transparent 100%);
+        width: 500px;
+        height: 500px;
     }
 
-    .slice {
+    #pointer {
         position: absolute;
-        width: 50%;
-        height: 50%;
-        top: 50%;
+        top: -5px;
         left: 50%;
-        transform-origin: 0% 0%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-bottom: 35px solid #FFCC00;
+        z-index: 10;
+    }
+
+    #spinButton {
+        margin-top: 25px;
+        padding: 15px 40px;
+        font-size: 20px;
+        background: #00AEEF;
+        color: #0A1A2F;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
         font-weight: bold;
-        color: #FFFFFF;
-        text-align: center;
-        padding: 10px;
-        clip-path: polygon(0 0, 100% 0, 0 100%);
+    }
+
+    #result {
+        margin-top: 15px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    svg {
+        border-radius: 50%;
+        border: 10px solid #FFFFFF;
+        box-shadow: 0 0 25px rgba(0,0,0,0.4);
     }
 </style>
 </head>
@@ -56,47 +69,85 @@
 
 <img id="logo" src="/attachments/sPv7jaSWqdPwsZY7SbQoH.png" alt="Nexus People Logo">
 
-<div id="wheel"></div>
+<div id="wheelContainer">
+    <div id="pointer"></div>
+    <svg id="wheel" width="500" height="500" viewBox="0 0 500 500">
+        <g id="wheelGroup" transform="translate(250,250)"></g>
+    </svg>
+</div>
 
-<button id="spinButton" style="
-    margin-top: 35px;
-    padding: 18px 40px;
-    font-size: 22px;
-    background: #00AEEF;
-    color: #0A1A2F;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-">SPIN</button>
+<button id="spinButton">SPIN</button>
+<div id="result"></div>
 
 <script>
-    const prizes = [
-        "£10 Voucher",
-        "Extra Break",
-        "Free Lunch",
-        "Nexus Goodie Bag",
-        "Early Finish",
-        "Mystery Prize"
-    ];
-
-    const wheel = document.getElementById("wheel");
+    const prizes = Array.from({ length: 15 }, (_, i) => `Prize ${i + 1}`);
+    const colours = ["#00AEEF", "#001B3A"];
+    const wheelGroup = document.getElementById("wheelGroup");
     const sliceAngle = 360 / prizes.length;
+    const radius = 220;
+    const textRadius = 140;
 
-    prizes.forEach((prize, i) => {
-        const slice = document.createElement("div");
-        slice.className = "slice";
+    // Create slices and labels
+    prizes.forEach((label, i) => {
+        const startAngle = (i * sliceAngle - 90) * Math.PI / 180;
+        const endAngle = ((i + 1) * sliceAngle - 90) * Math.PI / 180;
 
-        slice.style.transform = `rotate(${i * sliceAngle}deg)`;
-        slice.style.background = i % 2 === 0 ? "#00AEEF" : "#001B3A";
+        const x1 = Math.cos(startAngle) * radius;
+        const y1 = Math.sin(startAngle) * radius;
+        const x2 = Math.cos(endAngle) * radius;
+        const y2 = Math.sin(endAngle) * radius;
 
-        slice.innerHTML = prize;
-        wheel.appendChild(slice);
+        const largeArc = sliceAngle > 180 ? 1 : 0;
+
+        const pathData = [
+            "M 0 0",
+            `L ${x1} ${y1}`,
+            `A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2}`,
+            "Z"
+        ].join(" ");
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", pathData);
+        path.setAttribute("fill", colours[i % 2]);
+        path.setAttribute("stroke", "#0A1A2F");
+        path.setAttribute("stroke-width", "1");
+        wheelGroup.appendChild(path);
+
+        const midAngle = ((i + 0.5) * sliceAngle - 90) * Math.PI / 180;
+        const tx = Math.cos(midAngle) * textRadius;
+        const ty = Math.sin(midAngle) * textRadius;
+
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", tx);
+        text.setAttribute("y", ty);
+        text.setAttribute("fill", "#FFFFFF");
+        text.setAttribute("font-size", "16");
+        text.setAttribute("font-weight", "bold");
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("alignment-baseline", "middle");
+        text.setAttribute("transform", `rotate(${(i + 0.5) * sliceAngle}, ${tx}, ${ty})`);
+        text.textContent = label;
+        wheelGroup.appendChild(text);
     });
 
+    let currentRotation = 0;
+
     document.getElementById("spinButton").addEventListener("click", () => {
-        const randomSpin = 3600 + Math.floor(Math.random() * 360);
-        wheel.style.transform = `rotate(${randomSpin}deg)`;
+        const extra = Math.floor(Math.random() * 360);
+        const spins = 10 * 360;
+        const targetRotation = currentRotation + spins + extra;
+
+        wheelGroup.style.transition = "transform 4s ease-out";
+        wheelGroup.style.transform = `translate(0,0) rotate(${targetRotation}deg)`;
+
+        const finalRotation = targetRotation % 360;
+        const index = Math.floor(((360 - finalRotation + sliceAngle / 2) % 360) / sliceAngle);
+        const winningPrize = prizes[index];
+
+        setTimeout(() => {
+            document.getElementById("result").textContent = `You won: ${winningPrize}`;
+            currentRotation = targetRotation % 360;
+        }, 4000);
     });
 </script>
 
