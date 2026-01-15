@@ -29,12 +29,13 @@
     }
 
   
+
 #pointer {
     position: absolute;
-    top: -5px;
+    top: 15px; /* ✅ Move it down closer to the wheel */
     left: 50%;
     transform: translateX(-50%) rotate(180deg);
-    transform-origin: center bottom; /* ✅ Keeps it anchored at the bottom */
+    transform-origin: center bottom;
     width: 0;
     height: 0;
     border-left: 20px solid transparent;
@@ -42,6 +43,7 @@
     border-bottom: 35px solid #FFCC00;
     z-index: 10;
 }
+
 
 
     #spinButton {
@@ -156,4 +158,5 @@
 
 </body>
 </html>
+
 
