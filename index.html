@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,20 +28,18 @@
         height: 500px;
     }
 
-
-#pointer {
-    position: absolute;
-    top: -5px;
-    left: 50%;
-    transform: translateX(-50%) rotate(180deg);
-    width: 0;
-    height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-bottom: 35px solid #FFCC00;
-    z-index: 10;
-}
-
+    #pointer {
+        position: absolute;
+        top: -5px;
+        left: 50%;
+        transform: translateX(-50%) rotate(180deg); /* ✅ Rotated to point at wheel */
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-bottom: 35px solid #FFCC00;
+        z-index: 10;
+    }
 
     #spinButton {
         margin-top: 25px;
@@ -66,7 +65,6 @@
         box-shadow: 0 0 25px rgba(0,0,0,0.4);
     }
 
-    /* Correct rotation centre */
     #wheelGroup {
         transform-origin: 250px 250px;
     }
@@ -74,9 +72,7 @@
 </head>
 <body>
 
-<img id="logo" src="/attachments/sPv7jaSWqdPwsZY7SbQoH.png" alt="Nexus People Logo">
-
-<div id="wheelContainer">
+<img id="logo" src="/attachments/sPv7jaSWdiv id="wheelContainer">
     <div id="pointer"></div>
 
     <svg id="wheel" width="500" height="500" viewBox="0 0 500 500">
@@ -110,7 +106,7 @@
 
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path.setAttribute("d", `M ${cx} ${cy} L ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2} Z`);
-        path.setAttribute("fill", colours[i % 2]);
+        path.setAttribute("fill", colours[i % colours.length]);
         path.setAttribute("stroke", "#0A1A2F");
         path.setAttribute("stroke-width", "1");
         wheelGroup.appendChild(path);
@@ -134,36 +130,26 @@
 
     let currentRotation = 0;
 
- document.getElementById("spinButton").addEventListener("click", () => {
-    const extra = Math.floor(Math.random() * 360);
-    const spins = 10 * 360;
-    const target = spins + extra;
+    document.getElementById("spinButton").addEventListener("click", () => {
+        const extra = Math.floor(Math.random() * 360);
+        const spins = 10 * 360;
+        const target = currentRotation + spins + extra;
 
-    // Reset wheel instantly (no animation)
-    wheelGroup.style.transition = "none";
-    wheelGroup.style.transform = "rotate(0deg)";
+        const duration = (4 + Math.random() * 2).toFixed(2); // 4–6 seconds
+        wheelGroup.style.transition = `transform ${duration}s cubic-bezier(0.25, 1, 0.5, 1)`; // ✅ Smooth deceleration
+        wheelGroup.style.transform = `rotate(${target}deg)`;
 
-    // Force browser to apply the reset before animating
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            // Now animate the spin
-            wheelGroup.style.transition = "transform 4s ease-out";
-            wheelGroup.style.transform = `rotate(${target}deg)`;
-        });
+        currentRotation = target;
+
+        const final = target % 360;
+        const index = Math.floor(((360 - final + sliceAngle / 2) % 360) / sliceAngle);
+        const winningPrize = prizes[index];
+
+        setTimeout(() => {
+            document.getElementById("result").textContent = `You won: ${winningPrize}`;
+        }, duration * 1000);
     });
-
-    // Work out the winning slice
-    const final = target % 360;
-    const index = Math.floor(((360 - final + sliceAngle / 2) % 360) / sliceAngle);
-    const winningPrize = prizes[index];
-
-    setTimeout(() => {
-        document.getElementById("result").textContent = `You won: ${winningPrize}`;
-    }, 4000);
-});
 </script>
 
 </body>
 </html>
-
-
