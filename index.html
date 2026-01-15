@@ -28,26 +28,23 @@
         height: 500px;
     }
 
-  
-
-
-
-#pointer {
-    position: absolute;
-    top: 30px; /* Try 30px–32px for perfect alignment */
-    left: 50%;
-    transform: translateX(-50%) rotate(180deg);
-    transform-origin: center bottom;
-    width: 0;
-    height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-bottom: 35px solid #FFCC00;
-    z-index: 10;
-}
-
-
-
+    /* ✅ Pointer tip locked to inner wheel edge */
+    #pointer {
+        position: absolute;
+        left: 50%;
+        top: 10px; /* inner edge of the wheel (SVG has 10px border) */
+        transform:
+            translate(-50%, 0)
+            rotate(180deg)
+            translateY(17.5px); /* half of pointer height (35/2) */
+        transform-origin: center bottom;
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-bottom: 35px solid #FFCC00;
+        z-index: 10;
+    }
 
     #spinButton {
         margin-top: 25px;
@@ -80,7 +77,9 @@
 </head>
 <body>
 
-<img id="logo" src="/attachments/sPv7jaSWdiv id="wheelContainer">
+<imgachments/sPv7jaSWqdPwsZY7SbQoH.png
+
+<div id="wheelContainer">
     <div id="pointer"></div>
 
     <svg id="wheel" width="500" height="500" viewBox="0 0 500 500">
@@ -144,7 +143,7 @@
         const target = currentRotation + spins + extra;
 
         const duration = (4 + Math.random() * 2).toFixed(2); // 4–6 seconds
-        wheelGroup.style.transition = `transform ${duration}s cubic-bezier(0.25, 1, 0.5, 1)`; // ✅ Smooth deceleration
+        wheelGroup.style.transition = `transform ${duration}s cubic-bezier(0.18, 0.9, 0.15, 1)`; // smooth decel
         wheelGroup.style.transform = `rotate(${target}deg)`;
 
         currentRotation = target;
@@ -161,8 +160,4 @@
 
 </body>
 </html>
-
-
-
-
-
+``
