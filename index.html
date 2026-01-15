@@ -28,18 +28,21 @@
         height: 500px;
     }
 
-    #pointer {
-        position: absolute;
-        top: -5px;
-        left: 50%;
-        transform: translateX(-50%) rotate(180deg); /* ✅ Rotated to point at wheel */
-        width: 0;
-        height: 0;
-        border-left: 20px solid transparent;
-        border-right: 20px solid transparent;
-        border-bottom: 35px solid #FFCC00;
-        z-index: 10;
-    }
+  
+#pointer {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%) rotate(180deg);
+    transform-origin: center bottom; /* ✅ Keeps it anchored at the bottom */
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 35px solid #FFCC00;
+    z-index: 10;
+}
+
 
     #spinButton {
         margin-top: 25px;
@@ -153,3 +156,4 @@
 
 </body>
 </html>
+
