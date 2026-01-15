@@ -39,7 +39,6 @@
         top: 50%;
         left: 50%;
         transform-origin: 0% 0%;
-        border: 1px solid #FFFFFF;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -48,6 +47,7 @@
         color: #FFFFFF;
         text-align: center;
         padding: 10px;
+        clip-path: polygon(0 0, 100% 0, 0 100%);
     }
 
     #spinButton {
@@ -87,8 +87,10 @@
     prizes.forEach((prize, i) => {
         const slice = document.createElement("div");
         slice.className = "slice";
-        slice.style.transform = `rotate(${i * sliceAngle}deg) skewY(${90 - sliceAngle}deg)`;
+
+        slice.style.transform = `rotate(${i * sliceAngle}deg)`;
         slice.style.background = i % 2 === 0 ? "#00AEEF" : "#001B3A";
+
         slice.innerHTML = prize;
         wheel.appendChild(slice);
     });
